@@ -1,16 +1,16 @@
 {
   "private": true,
-  "displayName": "Plugin Name",
-  "name": "homebridge-plugin-name",
-  "version": "1.0.0",
-  "description": "A short description about what your plugin does.",
+  "displayName": "MiniDSP SHD Volumio Control",
+  "name": "homebridge-minidsp-shd-volumio",
+  "version": "0.0.1",
+  "description": "Control your MiniDSP SHD in HomeKit",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git://github.com/USERNAME/GITHUB_PROJECT_NAME.git"
+    "url": "git://github.com/fivenp/homebridge-minidsp-shd-volumio.git"
   },
   "bugs": {
-    "url": "https://github.com/USERNAME/GITHUB_PROJECT_NAME/issues"
+    "url": "https://github.com/fivenp/homebridge-minidsp-shd-volumio/issues"
   },
   "engines": {
     "node": ">=14.18.1",
@@ -26,7 +26,10 @@
   "keywords": [
     "homebridge-plugin"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "node-fetch": "2.6.6",
+    "socket.io-client": "2.3.0"
+  },
   "devDependencies": {
     "@types/node": "^16.10.9",
     "@typescript-eslint/eslint-plugin": "^5.0.0",

@@ -1,5 +1,5 @@
 {
-  "pluginAlias": "ExampleHomebridgePlugin",
+  "pluginAlias": "MiniDspShd",
   "pluginType": "platform",
   "singular": true,
   "schema": {
@@ -9,7 +9,19 @@
         "title": "Name",
         "type": "string",
         "required": true,
-        "default": "Example Dynamic Platform"
+        "default": "SHD"
+      },
+      "api": {
+        "title": "API Url",
+        "type": "string",
+        "required": true,
+        "default": "http://localhost:3000"
+      },
+      "defaultVolume": {
+        "title": "Default On Volume",
+        "type": "number",
+        "required": true,
+        "default": "58"
       }
     }
   }
