@@ -3,11 +3,11 @@ import {
   Service,
   PlatformAccessory,
   CharacteristicValue,
-} from "homebridge";
-import fetch from "node-fetch";
-import io from "socket.io-client";
+} from 'homebridge';
+import fetch from 'node-fetch';
+import io from 'socket.io-client';
 
-import { SHDPlatform } from "./platform";
+import { SHDPlatform } from './platform';
 
 /**
  * Platform Accessory
@@ -36,19 +36,19 @@ export class SHDVolumeAccessory {
     private readonly accessory: PlatformAccessory
   ) {
     this.log = platform.log;
-    this.deviceName = "SHD Volume";
+    this.deviceName = 'SHD Volume';
     this.socket = io.connect(`${this.state.APIUrl}:3000`);
 
     // Get initial state and listen for updates
-    this.socket.on("pushState", this.updateFromSocket.bind(this));
-    this.socket.emit("getState", "");
+    this.socket.on('pushState', this.updateFromSocket.bind(this));
+    this.socket.emit('getState', '');
 
     // set accessory information
     this.accessory
       .getService(this.platform.Service.AccessoryInformation)!
-      .setCharacteristic(this.platform.Characteristic.Manufacturer, "MiniDSP")
-      .setCharacteristic(this.platform.Characteristic.Model, "SHD")
-      .setCharacteristic(this.platform.Characteristic.SerialNumber, "--------");
+      .setCharacteristic(this.platform.Characteristic.Manufacturer, 'MiniDSP')
+      .setCharacteristic(this.platform.Characteristic.Model, 'SHD')
+      .setCharacteristic(this.platform.Characteristic.SerialNumber, '--------');
 
     // get the LightBulb service if it exists, otherwise create a new LightBulb service
     // you can create multiple services for each accessory
@@ -82,7 +82,7 @@ export class SHDVolumeAccessory {
    * Handle "SET" requests from HomeKit
    * These are sent when the user changes the state of an accessory, for example, turning on a Light bulb.
    */
-  async setOn(value: CharacteristicValue) {
+  async setOn() {
     this.state.On = true;
   }
 
@@ -108,7 +108,7 @@ export class SHDVolumeAccessory {
       .updateValue(currentVolume);
 
     this.log.debug(
-      "[%s] Get Initial Volume ->",
+      '[%s] Get Initial Volume ->',
       this.deviceName,
       currentVolume
     );
@@ -123,8 +123,8 @@ export class SHDVolumeAccessory {
     // implement your own code to set the brightness
     this.state.Volume = value as number;
     const newVolume = this.state.Volume;
-    this.socket.emit("volume", newVolume);
-    this.log.info("[%s] Set Volume -> ", this.deviceName, newVolume);
+    this.socket.emit('volume', newVolume);
+    this.log.info('[%s] Set Volume -> ', this.deviceName, newVolume);
   }
 
   async getVolume() {
@@ -133,8 +133,8 @@ export class SHDVolumeAccessory {
     return data.volume;
   }
 
-  updateFromSocket(data) {
-    this.log.debug("[%s] Got new state from socket...", this.deviceName);
+  updateFromSocket() {
+    this.log.debug('[%s] Got new state from socket...', this.deviceName);
     this.getOn();
   }
 }

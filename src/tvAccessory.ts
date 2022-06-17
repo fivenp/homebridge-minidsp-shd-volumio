@@ -3,11 +3,11 @@ import {
   Logger,
   PlatformAccessory,
   Service,
-} from "homebridge";
-import fetch from "node-fetch";
-import io from "socket.io-client";
+} from 'homebridge';
+import fetch from 'node-fetch';
+import io from 'socket.io-client';
 
-import { SHDPlatform } from "./platform";
+import { SHDPlatform } from './platform';
 
 export class SHDTvAccessory {
   private tvService: Service;
@@ -24,46 +24,46 @@ export class SHDTvAccessory {
 
   private sources = [
     {
-      name: "TOSLINK",
-      type: "2",
-      activeValue: "1",
-      remoteId: "1",
+      name: 'TOSLINK',
+      type: '2',
+      activeValue: '1',
+      remoteId: '1',
     },
     {
-      name: "RCA",
-      type: "2",
-      activeValue: "2",
-      remoteId: "4",
+      name: 'RCA',
+      type: '2',
+      activeValue: '2',
+      remoteId: '4',
     },
     {
-      name: "STREAMING",
-      type: "2",
-      activeValue: "3",
-      remoteId: "99",
+      name: 'STREAMING',
+      type: '2',
+      activeValue: '3',
+      remoteId: '99',
     },
     {
-      name: "SPDIF",
-      type: "1",
-      activeValue: "4",
-      remoteId: "2",
+      name: 'SPDIF',
+      type: '1',
+      activeValue: '4',
+      remoteId: '2',
     },
     {
-      name: "AES-EBU",
-      type: "3",
-      activeValue: "5",
-      remoteId: "3",
+      name: 'AES-EBU',
+      type: '3',
+      activeValue: '5',
+      remoteId: '3',
     },
     {
-      name: "XLR",
-      type: "3",
-      activeValue: "6",
-      remoteId: "5",
+      name: 'XLR',
+      type: '3',
+      activeValue: '6',
+      remoteId: '5',
     },
     {
-      name: "USB",
-      type: "3",
-      activeValue: "7",
-      remoteId: "6",
+      name: 'USB',
+      type: '3',
+      activeValue: '7',
+      remoteId: '6',
     },
   ];
 
@@ -74,18 +74,18 @@ export class SHDTvAccessory {
     const Characteristic = this.platform.Characteristic;
 
     this.log = platform.log;
-    this.deviceName = "SHD Input";
+    this.deviceName = 'SHD Input';
     this.socket = io.connect(`${this.state.APIUrl}:3000`);
 
     // Get initial state and listen for updates
-    this.socket.on("pushState", this.updateFromSocket.bind(this));
-    this.socket.emit("getState", "");
+    this.socket.on('pushState', this.updateFromSocket.bind(this));
+    this.socket.emit('getState', '');
 
     this.accessory
       .getService(this.platform.Service.AccessoryInformation)!
-      .setCharacteristic(Characteristic.Manufacturer, "MiniDSP")
-      .setCharacteristic(Characteristic.Model, "SHD")
-      .setCharacteristic(Characteristic.SerialNumber, "---------");
+      .setCharacteristic(Characteristic.Manufacturer, 'MiniDSP')
+      .setCharacteristic(Characteristic.Model, 'SHD')
+      .setCharacteristic(Characteristic.SerialNumber, '---------');
 
     this.tvService =
       this.accessory.getService(this.platform.Service.Television) ||
@@ -127,7 +127,7 @@ export class SHDTvAccessory {
           `${source.name}`
         );
 
-      this.log.info("[%s] Adding inputService ->", this.deviceName, source);
+      this.log.info('[%s] Adding inputService ->', this.deviceName, source);
 
       inputService
         .setCharacteristic(Characteristic.Identifier, parseInt(i) + 1)
@@ -150,25 +150,25 @@ export class SHDTvAccessory {
   async setActive(value: CharacteristicValue) {
     try {
       if (value === 1) {
-        this.log.info("[%s] Power -> [on]", this.deviceName, true);
+        this.log.info('[%s] Power -> [on]', this.deviceName, true);
         this.state.Active = true;
       } else {
-        this.log.info("[%s] Power -> [off]", this.deviceName, false);
+        this.log.info('[%s] Power -> [off]', this.deviceName, false);
         this.state.Active = false;
       }
     } catch (error) {
-      this.log.error("[%s] Error setting state:", this.deviceName, error);
+      this.log.error('[%s] Error setting state:', this.deviceName, error);
     }
   }
 
-  updateFromSocket(data) {
-    this.log.debug("[%s] Got new state from socket...", this.deviceName);
+  updateFromSocket() {
+    this.log.debug('[%s] Got new state from socket...', this.deviceName);
     this.getActiveIdentifier();
   }
 
   async getActive(): Promise<CharacteristicValue> {
     this.log.debug(
-      "[%s] Getting current state..",
+      '[%s] Getting current state..',
       this.deviceName,
       this.state.Active
     );
@@ -179,23 +179,23 @@ export class SHDTvAccessory {
     const sourceIndex = parseInt(value as string) - 1;
     const source = this.sources[sourceIndex];
 
-    this.log.info("[%s] Selecting input -> [%s]", this.deviceName, source.name);
+    this.log.info('[%s] Selecting input -> [%s]', this.deviceName, source.name);
 
     try {
-      this.socket.emit("browseLibrary", { uri: `inputs/id/${value}` });
+      this.socket.emit('browseLibrary', { uri: `inputs/id/${value}` });
       this.state.ActiveIdentifier = value as number;
       this.tvService
         .getCharacteristic(this.platform.Characteristic.ActiveIdentifier)
         .updateValue(value);
     } catch (error) {
-      this.log.error("[%s] Error selecting input:", this.deviceName, error);
+      this.log.error('[%s] Error selecting input:', this.deviceName, error);
     }
   }
 
   async getActiveIdentifier(): Promise<CharacteristicValue> {
     const response = await fetch(`${this.state.APIUrl}/api/v1/getState`);
     const data = await response.json();
-    let currentlyActive = "3";
+    let currentlyActive = '3';
 
     this.sources.forEach((source) => {
       if (data.title === source.name) {
@@ -204,7 +204,7 @@ export class SHDTvAccessory {
     });
 
     this.log.debug(
-      "[%s] Getting active input..",
+      '[%s] Getting active input..',
       this.deviceName,
       this.state.ActiveIdentifier,
       data.title,
@@ -213,7 +213,7 @@ export class SHDTvAccessory {
 
     if (parseInt(currentlyActive) !== this.state.ActiveIdentifier) {
       this.log.debug(
-        "[%s] Switch active input from... to...",
+        '[%s] Switch active input from... to...',
         this.deviceName,
         this.state.ActiveIdentifier,
         currentlyActive
