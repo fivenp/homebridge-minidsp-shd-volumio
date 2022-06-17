@@ -1,5 +1,4 @@
 {
-  "private": true,
   "displayName": "MiniDSP SHD Volumio Control",
   "name": "homebridge-minidsp-shd-volumio",
   "version": "0.0.1",
