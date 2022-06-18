@@ -1,7 +1,7 @@
 {
   "displayName": "MiniDSP SHD Volumio Control",
   "name": "homebridge-minidsp-shd-volumio",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Control your MiniDSP SHD in HomeKit",
   "license": "Apache-2.0",
   "repository": {
