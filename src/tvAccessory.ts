@@ -182,7 +182,7 @@ export class SHDTvAccessory {
     this.log.info('[%s] Selecting input -> [%s]', this.deviceName, source.name);
 
     try {
-      this.socket.emit('browseLibrary', { uri: `inputs/id/${value}` });
+      this.socket.emit('browseLibrary', { uri: `inputs/id/${source.remoteId}` });
       this.state.ActiveIdentifier = value as number;
       this.tvService
         .getCharacteristic(this.platform.Characteristic.ActiveIdentifier)
